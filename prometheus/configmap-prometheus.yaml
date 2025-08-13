@@ -1,0 +1,35 @@
+# File: configmap-prometheus.yaml
+# Descrizione: ConfigMap contenente la configurazione di Prometheus, inclusa la raccolta delle metriche di cAdvisor dai nodi Kubernetes.
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-config
+  namespace: monitoring
+data:
+  prometheus.yaml: |
+    global:
+      scrape_interval: 15s
+      scrape_timeout: 10s
+      evaluation_interval: 15s
+
+    scrape_configs:
+      # Prometheus stesso
+      - job_name: 'prometheus'
+        static_configs:
+          - targets: ['localhost:9090']
+
+      # cAdvisor su ogni nodo
+      - job_name: 'cadvisor'
+        scheme: https
+        metrics_path: /metrics
+        kubernetes_sd_configs:
+          - role: node
+        tls_config:
+          insecure_skip_verify: true
+        bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+        relabel_configs:
+          - source_labels: [__meta_kubernetes_node_name]
+            target_label: node
+          - source_labels: [__meta_kubernetes_node_address_InternalIP]
+            target_label: instance

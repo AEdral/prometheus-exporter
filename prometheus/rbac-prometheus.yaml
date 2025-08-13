@@ -1,0 +1,43 @@
+# File: rbac-prometheus.yaml
+# Descrizione: ServiceAccount, ClusterRole e ClusterRoleBinding per permettere a Prometheus di leggere i nodi e le metriche cAdvisor.
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: prometheus
+  namespace: monitoring
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: prometheus
+rules:
+  - apiGroups: [""]
+    resources:
+      - nodes          # permette di leggere informazioni sui nodi
+      - nodes/proxy    # permette di accedere agli endpoint /metrics/cadvisor
+      - nodes/metrics  # permette di accedere alle metriche del nodo
+      - pods           # permette di leggere informazioni sui pod
+      - services       # permette di leggere informazioni sui servizi
+      - endpoints      # permette di leggere informazioni sugli endpoint
+    verbs:
+      - get
+      - list
+      - watch
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: prometheus
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: prometheus
+subjects:
+  - kind: ServiceAccount
+    name: prometheus
+    namespace: monitoring

@@ -1,0 +1,16 @@
+# File: service-grafana.yaml
+# Descrizione: Service NodePort per Grafana, permette di accedere all’interfaccia web da fuori Minikube.
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: grafana
+  namespace: monitoring
+spec:
+  selector:
+    app: grafana
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
+  type: NodePort
