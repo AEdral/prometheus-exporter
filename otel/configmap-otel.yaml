@@ -1,0 +1,66 @@
+# File: configmap-otel.yaml
+# Descrizione: ConfigMap per la configurazione dell'OpenTelemetry Collector
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: otel-config
+  namespace: monitoring
+data:
+  config.yaml: |
+    receivers:
+      prometheus:
+        config:
+          scrape_configs:
+            # cAdvisor metrics da tutti i nodi
+            - job_name: 'cadvisor'
+              metrics_path: /metrics/cadvisor
+              scheme: https
+              kubernetes_sd_configs:
+                - role: node
+              tls_config:
+                insecure_skip_verify: true
+              bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+              relabel_configs:
+                - source_labels: [__meta_kubernetes_node_name]
+                  target_label: node
+                - source_labels: [__meta_kubernetes_node_address_InternalIP]
+                  target_label: instance
+
+            # kubelet metrics
+            - job_name: 'kubelet'
+              metrics_path: /metrics
+              scheme: https
+              kubernetes_sd_configs:
+                - role: node
+              tls_config:
+                insecure_skip_verify: true
+              bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+              relabel_configs:
+                - source_labels: [__meta_kubernetes_node_name]
+                  target_label: node
+
+    processors:
+      batch:
+        timeout: 1s
+        send_batch_size: 1024
+      memory_limiter:
+        check_interval: 1s
+        limit_mib: 1500
+
+    exporters:
+      prometheus:
+        endpoint: "0.0.0.0:9464"
+        namespace: "otel"
+        const_labels:
+          label1: value1
+        send_timestamps: true
+        metric_expiration: 180m
+        enable_open_metrics: true
+
+    service:
+      pipelines:
+        metrics:
+          receivers: [prometheus]
+          processors: [memory_limiter, batch]
+          exporters: [prometheus] 
