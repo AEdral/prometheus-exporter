@@ -1,5 +1,5 @@
 # File: configmap-otel.yaml
-# Descrizione: ConfigMap per la configurazione dell'OpenTelemetry Collector
+# Descrizione: ConfigMap OTEL per raccogliere metriche da cAdvisor/kubelet e esportarle a Prometheus e sistemi esterni
 
 apiVersion: v1
 kind: ConfigMap
@@ -9,6 +9,7 @@ metadata:
 data:
   config.yaml: |
     receivers:
+      # Receiver per raccogliere metriche da cAdvisor e kubelet
       prometheus:
         config:
           scrape_configs:
@@ -47,20 +48,39 @@ data:
       memory_limiter:
         check_interval: 1s
         limit_mib: 1500
+      # Aggiungi attributi custom per identificare la sorgente
+      attributes:
+        actions:
+          - key: telemetry.source
+            value: "kubernetes-cluster"
+            action: insert
+          - key: environment
+            value: "production"
+            action: insert
 
     exporters:
+      # 1. Prometheus (locale) - Espone su porta 9464
       prometheus:
         endpoint: "0.0.0.0:9464"
         namespace: "otel"
         const_labels:
-          label1: value1
+          source: "kubernetes"
+          collector: "otel"
         send_timestamps: true
         metric_expiration: 180m
         enable_open_metrics: true
+
+
+
+      # 4. Logging per debugging
+      logging:
+        loglevel: info
+        sampling_initial: 1
+        sampling_thereafter: 1
 
     service:
       pipelines:
         metrics:
           receivers: [prometheus]
-          processors: [memory_limiter, batch]
-          exporters: [prometheus] 
+          processors: [attributes, memory_limiter, batch]
+          exporters: [prometheus, logging] 

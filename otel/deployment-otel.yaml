@@ -39,17 +39,4 @@ spec:
         - name: otel-config
           configMap:
             name: otel-config
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: otel-collector
-  namespace: monitoring
-spec:
-  type: ClusterIP
-  selector:
-    app: otel-collector
-  ports:
-    - name: metrics
-      port: 9464
-      targetPort: 9464 
+ 

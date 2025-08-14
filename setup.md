@@ -1,3 +1,11 @@
+# ========================================
+# SISTEMA DI MONITORING KUBERNETES
+# ========================================
+
+# ========================================
+# DEPLOY INIZIALE
+# ========================================
+
 # Creazione namespace monitoring
 kubectl create namespace monitoring
 
@@ -8,10 +16,52 @@ kubectl apply -f cluster/otel/
 kubectl apply -f cluster/prometheus/
 kubectl apply -f cluster/grafana/
 
-# Verifica servizi
+# ========================================
+# VERIFICA SERVIZI
+# ========================================
+
+# Verifica servizi attivi
 kubectl get svc -n monitoring
+
+# Verifica pod in esecuzione
+kubectl get pods -n monitoring
+
+# Verifica deployment
+kubectl get deployments -n monitoring
+
+# ========================================
+# RIAVVIO SERVIZI
+# ========================================
+
+
+
+# Riavviare tutti i servizi contemporaneamente
+kubectl rollout restart deployment -n monitoring
+
+# ========================================
+# MONITORAGGIO RIAVVIO
+# ========================================
+
+# Verificare stato rollout
+kubectl rollout status deployment/otel-collector -n monitoring
+kubectl rollout status deployment/prometheus -n monitoring
+kubectl rollout status deployment/grafana -n monitoring
+
+# Verificare log dopo riavvio
+kubectl logs -l app=otel-collector -n monitoring --tail=20
+kubectl logs -l app=prometheus -n monitoring --tail=20
+kubectl logs -l app=grafana -n monitoring --tail=20
+
+# ========================================
+# ACCESSO AI SERVIZI
+# ========================================
 
 # Port-forward per accesso ai servizi
 kubectl port-forward -n monitoring service/prometheus 9090:9090
 kubectl port-forward -n monitoring service/grafana 3000:3000
 kubectl port-forward -n monitoring service/otel-collector 9464:9464
+
+# Porta 4317 (OTLP/gRPC)
+kubectl port-forward -n monitoring service/otel-collector 4317:4317
+# Porta 4318 (OTLP/HTTP)
+kubectl port-forward -n monitoring service/otel-collector 4318:4318
