@@ -17,6 +17,28 @@ kubectl apply -f cluster/prometheus/
 kubectl apply -f cluster/grafana/
 
 # ========================================
+# SIGNOZ (OPZIONALE - VIA HELM)
+# ========================================
+# Per installare SigNoz, usa il file cluster/signoz/setup.md
+# Comando rapido: helm install signoz signoz/signoz -n signoz --create-namespace -f cluster/signoz/values.yaml
+
+# ========================================
+# KAFKA
+# ========================================
+# Per installare Kafka, usa il file cluster/kafka/setup.md
+# Comando rapido: kubectl apply -f cluster/kafka/deploy-all.yaml
+
+# ========================================
+# SCRIPTS UTILI
+# ========================================
+# Per gestire i port-forwarding automatici:
+# - Avvia tutti: ./cluster/scripts/port-forwarding/auto-port-forward.sh
+# - Ferma tutti: ./cluster/scripts/port-forwarding/stop-port-forward.sh
+# - Documentazione: cluster/scripts/port-forwarding/PORT-FORWARDING.md
+
+
+
+# ========================================
 # VERIFICA SERVIZI
 # ========================================
 
@@ -32,8 +54,6 @@ kubectl get deployments -n monitoring
 # ========================================
 # RIAVVIO SERVIZI
 # ========================================
-
-
 
 # Riavviare tutti i servizi contemporaneamente
 kubectl rollout restart deployment -n monitoring
@@ -56,7 +76,7 @@ kubectl logs -l app=grafana -n monitoring --tail=20
 # ACCESSO AI SERVIZI
 # ========================================
 
-# Port-forward per accesso ai servizi
+# Port-forward per accesso ai servizi monitoring
 kubectl port-forward -n monitoring service/prometheus 9090:9090
 kubectl port-forward -n monitoring service/grafana 3000:3000
 kubectl port-forward -n monitoring service/otel-collector 9464:9464
@@ -65,3 +85,4 @@ kubectl port-forward -n monitoring service/otel-collector 9464:9464
 kubectl port-forward -n monitoring service/otel-collector 4317:4317
 # Porta 4318 (OTLP/HTTP)
 kubectl port-forward -n monitoring service/otel-collector 4318:4318
+

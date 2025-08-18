@@ -1,0 +1,34 @@
+global:
+  storageClass: standard   # usa la storage class di Minikube
+
+clickhouse:
+  installCustomStorageClass: true
+
+# Configurazione per Minikube
+signoz:
+  frontend:
+    resources:
+      requests:
+        memory: "256Mi"
+        cpu: "100m"
+      limits:
+        memory: "512Mi"
+        cpu: "200m"
+
+  queryService:
+    resources:
+      requests:
+        memory: "512Mi"
+        cpu: "250m"
+      limits:
+        memory: "1Gi"
+        cpu: "500m"
+
+  otelCollector:
+    resources:
+      requests:
+        memory: "256Mi"
+        cpu: "100m"
+      limits:
+        memory: "512Mi"
+        cpu: "200m" 
