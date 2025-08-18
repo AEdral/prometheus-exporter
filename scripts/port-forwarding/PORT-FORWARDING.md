@@ -18,6 +18,7 @@ Questo documento spiega come usare gli scripts automatici per il port-forwarding
 ### 📨 **KAFKA**
 - **Kafka**: localhost:9092
 - **Zookeeper**: localhost:2181
+- **Kafka UI**: http://localhost:30080
 
 ### 🖥️ **KUBERNETES**
 - **Dashboard**: https://localhost:8443
@@ -79,6 +80,7 @@ ps aux | grep "kubectl port-forward"
 📨 KAFKA:
    Kafka:          localhost:9092
    Zookeeper:      localhost:2181
+   Kafka UI:       http://localhost:30080
 
 🖥️  KUBERNETES:
    Dashboard:      https://localhost:8443
