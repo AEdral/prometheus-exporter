@@ -29,13 +29,13 @@ kubectl apply -f cluster/grafana/
 # Comando rapido: kubectl apply -f cluster/kafka/deploy-all.yaml
 
 # ========================================
-# INTEGRAZIONE OTEL-KAFKA (OTLP)
+# INTEGRAZIONE OTEL-KAFKA
 # ========================================
-# Per integrare OTEL Collector con Kafka via protocollo OTLP:
-# 1. Deploy bridge: kubectl apply -f cluster/otel-kafka-bridge/deploy-all.yaml
-# 2. Configura OTEL: kubectl apply -f cluster/otel/configmap-otel-otlp.yaml
+# Per integrare OTEL Collector con Kafka:
+# 1. Deploy Kafka: kubectl apply -f cluster/kafka/deploy-all.yaml
+# 2. Configura OTEL: kubectl apply -f cluster/otel/configmap.yaml
 # 3. Riavvia OTEL: kubectl rollout restart deployment/otel-collector -n monitoring
-# Documentazione: cluster/otel/setup-otel-otlp.md
+# Documentazione: cluster/otel/setup.md
 
 # ========================================
 # SCRIPTS UTILI

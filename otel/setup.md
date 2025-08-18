@@ -12,8 +12,8 @@ Kubernetes (cAdvisor/kubelet) → OTEL Collector → OTLP → Bridge → Kafka
 ## 📁 File necessari
 
 ### **OTEL Collector:**
-- `configmap-otel-otlp.yaml` - Configurazione OTEL con export OTLP
-- `setup-otel-otlp.md` - Questa documentazione
+- `configmap.yaml` - Configurazione OTEL con export Kafka
+- `setup.md` - Questa documentazione
 
 ### **Bridge OTLP→Kafka:**
 - `../otel-kafka-bridge/deploy-all.yaml` - Bridge completo
@@ -34,8 +34,8 @@ kubectl apply -f cluster/otel-kafka-bridge/deploy-all.yaml
 
 ### 3. Applica la nuova configurazione OTEL
 ```bash
-# Applica la configurazione OTEL con export OTLP
-kubectl apply -f cluster/otel/configmap-otel-otlp.yaml
+# Applica la configurazione OTEL con export Kafka
+kubectl apply -f cluster/otel/configmap.yaml
 ```
 
 ### 4. Riavvia OTEL Collector
@@ -50,10 +50,10 @@ kubectl rollout status deployment/otel-collector -n monitoring
 ### 5. Verifica la configurazione
 ```bash
 # Controlla che il ConfigMap sia stato applicato
-kubectl get configmap -n monitoring otel-config-otlp
+kubectl get configmap -n monitoring otel-config-kafka
 
 # Verifica la configurazione
-kubectl get configmap -n monitoring otel-config-otlp -o yaml
+kubectl get configmap -n monitoring otel-config-kafka -o yaml
 ```
 
 ## 🔧 Configurazione

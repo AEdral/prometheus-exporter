@@ -63,7 +63,7 @@ spec:
     spec:
       containers:
       - name: zookeeper
-        image: zookeeper:3.8
+        image: zookeeper:latest
         ports:
         - containerPort: 2181
         env:
