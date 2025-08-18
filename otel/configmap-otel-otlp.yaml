@@ -1,10 +1,10 @@
-# File: configmap-otel.yaml
-# Descrizione: ConfigMap OTEL per raccogliere metriche da cAdvisor/kubelet e esportarle a Prometheus e sistemi esterni
+# File: configmap-otel-kafka.yaml
+# Descrizione: ConfigMap OTEL per raccogliere metriche e esportarle direttamente su Kafka e Prometheus locale
 
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: otel-config
+  name: otel-config-kafka
   namespace: monitoring
 data:
   config.yaml: |
@@ -57,6 +57,12 @@ data:
           - key: environment
             value: "production"
             action: insert
+          - key: cluster.name
+            value: "minikube"
+            action: insert
+          - key: data.type
+            value: "metrics"
+            action: insert
 
     exporters:
       # 1. Prometheus (locale) - Espone su porta 9464
@@ -70,9 +76,20 @@ data:
         metric_expiration: 180m
         enable_open_metrics: true
 
+      # 2. Kafka - Esporta metriche direttamente su Kafka
+      kafka:
+        brokers: 
+          - "kafka:9092"
+        topic: "otel-metrics"
+        encoding: "otlp_proto"
+        # Configurazione per retry
+        retry_on_failure:
+          enabled: true
+          initial_interval: 5s
+          max_interval: 30s
+          max_elapsed_time: 300s
 
-
-      # 4. Logging per debugging
+      # 3. Logging per debugging
       logging:
         loglevel: info
         sampling_initial: 1
@@ -83,4 +100,4 @@ data:
         metrics:
           receivers: [prometheus]
           processors: [attributes, memory_limiter, batch]
-          exporters: [prometheus, logging] 
+          exporters: [prometheus, kafka, logging] 
