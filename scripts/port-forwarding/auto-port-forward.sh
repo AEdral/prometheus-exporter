@@ -77,6 +77,13 @@ if namespace_exists "kafka"; then
         kubectl port-forward -n kafka service/zookeeper 2181:2181 >/dev/null 2>&1 &
         echo "   ✅ Port-forwarding Zookeeper avviato (PID: $!)"
     fi
+    
+    # Kafka UI
+    if service_exists "kafka-ui" "kafka"; then
+        echo "   🖥️  Kafka UI: http://localhost:30080"
+        kubectl port-forward -n kafka service/kafka-ui 30080:8080 >/dev/null 2>&1 &
+        echo "   ✅ Port-forwarding Kafka UI avviato (PID: $!)"
+    fi
 else
     echo "⚠️  Namespace 'kafka' non trovato"
 fi
@@ -111,6 +118,7 @@ echo ""
 echo "📨 KAFKA:"
 echo "   Kafka:          localhost:9092"
 echo "   Zookeeper:      localhost:2181"
+echo "   Kafka UI:       http://localhost:30080"
 echo ""
 echo "🖥️  KUBERNETES:"
 echo "   Dashboard:      https://localhost:8443"
