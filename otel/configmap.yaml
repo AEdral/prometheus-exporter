@@ -76,10 +76,15 @@ data:
         metric_expiration: 180m
         enable_open_metrics: true
 
+      # 2. OTLP per SigNoz (gRPC) - IP macchina host
+      otlp/signoz:
+        endpoint: "172.25.132.11:4317"
+        tls:
+          insecure: true
+        headers:
+          source: "kubernetes-cluster"
 
-
-
-      # extra. Debug per debugging
+      # 3. Debug per debugging
       debug:
         verbosity: normal
 
@@ -88,4 +93,4 @@ data:
         metrics:
           receivers: [prometheus]
           processors: [attributes, memory_limiter, batch]
-          exporters: [prometheus, debug]
+          exporters: [prometheus, otlp/signoz, debug]
