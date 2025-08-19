@@ -80,8 +80,8 @@ if namespace_exists "kafka"; then
     
     # Kafka UI
     if service_exists "kafka-ui" "kafka"; then
-        echo "   🖥️  Kafka UI: http://localhost:30080"
-        kubectl port-forward -n kafka service/kafka-ui 30080:8080 >/dev/null 2>&1 &
+        echo "   🖥️  Kafka UI: http://localhost:8080"
+        kubectl port-forward -n kafka service/kafka-ui 8080:8080 >/dev/null 2>&1 &
         echo "   ✅ Port-forwarding Kafka UI avviato (PID: $!)"
     fi
 else

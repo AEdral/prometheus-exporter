@@ -35,4 +35,4 @@ spec:
       volumes:
       - name: otel-config
         configMap:
-          name: otel-config-kafka 
+          name: otel-config 

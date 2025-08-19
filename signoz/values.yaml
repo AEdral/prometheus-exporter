@@ -1,12 +1,12 @@
-global:
-  storageClass: standard   # usa la storage class di Minikube
+# SigNoz Helm Values
+# Namespace configuration
+namespaceOverride: "signoz-new"
 
-clickhouse:
-  installCustomStorageClass: true
-
-# Configurazione per Minikube
+# SigNoz configuration
 signoz:
+  # Frontend configuration
   frontend:
+    replicaCount: 1
     resources:
       requests:
         memory: "256Mi"
@@ -15,20 +15,57 @@ signoz:
         memory: "512Mi"
         cpu: "200m"
 
+  # Query Service configuration
   queryService:
+    replicaCount: 1
     resources:
       requests:
         memory: "512Mi"
-        cpu: "250m"
+        cpu: "200m"
       limits:
         memory: "1Gi"
         cpu: "500m"
 
-  otelCollector:
+  # Alert Manager configuration
+  alertManager:
+    replicaCount: 1
     resources:
       requests:
         memory: "256Mi"
         cpu: "100m"
       limits:
         memory: "512Mi"
-        cpu: "200m" 
+        cpu: "200m"
+
+  # ClickHouse configuration
+  clickhouse:
+    replicaCount: 1
+    resources:
+      requests:
+        memory: "1Gi"
+        cpu: "500m"
+      limits:
+        memory: "2Gi"
+        cpu: "1000m"
+    persistence:
+      enabled: true
+      size: 10Gi
+
+  # OpenTelemetry Collector configuration
+  otelCollector:
+    replicaCount: 1
+    resources:
+      requests:
+        memory: "256Mi"
+        cpu: "100m"
+      limits:
+        memory: "512Mi"
+        cpu: "200m"
+
+# Ingress configuration (optional)
+ingress:
+  enabled: false
+
+# Service configuration
+service:
+  type: ClusterIP 

@@ -1,10 +1,10 @@
-# File: configmap-otel-kafka.yaml
-# Descrizione: ConfigMap OTEL per raccogliere metriche e esportarle direttamente su Kafka e Prometheus locale
+# File: configmap-otel.yaml
+# Descrizione: ConfigMap OTEL per raccogliere metriche e esportarle su Prometheus locale
 
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: otel-config-kafka
+  name: otel-config
   namespace: monitoring
 data:
   config.yaml: |
@@ -76,20 +76,10 @@ data:
         metric_expiration: 180m
         enable_open_metrics: true
 
-      # 2. Kafka - Esporta metriche direttamente su Kafka
-      kafka:
-        brokers: 
-          - "kafka:9092"
-        topic: "otel-metrics"
-        encoding: "otlp_proto"
-        # Configurazione per retry
-        retry_on_failure:
-          enabled: true
-          initial_interval: 5s
-          max_interval: 30s
-          max_elapsed_time: 300s
 
-      # 3. Debug per debugging
+
+
+      # extra. Debug per debugging
       debug:
         verbosity: normal
 
@@ -98,4 +88,4 @@ data:
         metrics:
           receivers: [prometheus]
           processors: [attributes, memory_limiter, batch]
-          exporters: [prometheus, kafka, debug] 
+          exporters: [prometheus, debug]
