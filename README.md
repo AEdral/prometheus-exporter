@@ -38,11 +38,11 @@ graph LR
 
     %% Cloud Providers (semplificato)
     subgraph "CLOUD SYSTEMS"
-        CLOUD[Cloud Providers<br/>AWS, GCP, Azure, etc.]
+        CLOUD[SigNoz<br/>:9090]
     end
 
     %% Flussi principali
-    K8S -->|HTTPS| OTEL
+    K8S -->|Prometheus| OTEL
     OTEL -->|HTTP :9464| PROM
     OTEL -->|OTLP/gRPC| OTLP_GRPC
     OTEL -->|OTLP/HTTP| OTLP_HTTP

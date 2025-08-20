@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: otel-collector
+  name: infra-otel-collector
   namespace: monitoring
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: otel-collector
+      app: infra-otel-collector
   template:
     metadata:
       labels:
-        app: otel-collector
+        app: infra-otel-collector
     spec:
-      serviceAccountName: otel-collector
+      serviceAccountName: infra-otel-collector
       containers:
       - name: otel-collector
         image: otel/opentelemetry-collector-contrib:latest
